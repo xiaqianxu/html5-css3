@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的导航</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <div class="wrapper" id="mainDiv"></div>
+    </main>
+    <footer>
+      <div>
+        <ol>
+          <li>1.用js生成三个标签，在三个标签中生成对应的键盘</li>
+          <li>2.写css样式1：加宽高 kbd是内联元素，变成inline-block，变大写</li>
+          <li>3.调整第二行和第三行的间距，将整体居中</li>
+          <li>4.监听鼠标事件拿到对应的字母并跳转对应的网站</li>
+          <li>5.可以编辑键盘，指定所跳转的网址</li>
+        </ol>
+      </div>
+    </footer>
+    <script>
+      var keys = {
+        "0": {
+          0: "q",
+          1: "w",
+          2: "e",
+          3: "r",
+          4: "t",
+          5: "y",
+          6: "u",
+          7: "i",
+          8: "o",
+          9: "p",
+          length: 10
+        },
+        "1": {
+          0: "a",
+          1: "s",
+          2: "d",
+          3: "f",
+          4: "g",
+          5: "h",
+          6: "j",
+          7: "k",
+          8: "l",
+          length: 9
+        },
+        "2": {
+          0: "z",
+          1: "x",
+          2: "c",
+          3: "v",
+          4: "b",
+          5: "n",
+          6: "m",
+          length: 7
+        },
+        length: 3
+      };
+      var hash = {
+        q: "qq.com",
+        w: "weibo.com",
+        e: "ele.com",
+        r: "renren.com",
+        t: "tianya.com",
+        y: "youtubo.com",
+        u: "uc.com",
+        i: "iqiyi.com",
+        o: "opera.com",
+        p: undefined,
+        a: "acfun.com",
+        s: "souhu.com",
+        d: undefined,
+        z: "zhihu.com",
+        m: "www.macdonald.cn"
+      };
+      //   取出localStorage中的zz对应的hash
+      hasInLocalStorage = JSON.parse(localStorage.getItem("zz") || "");
+      if (hasInLocalStorage) {
+        hash = hasInLocalStorage;
+      }
+      // 遍历keys，生成kbd标签
+      index = 0;
+      while (index < keys["length"]) {
+        div1 = document.createElement("div");
+        mainDiv.appendChild(div1);
+        row = keys[index];
+        // console.log(row);
+        index2 = 0;
+        while (index2 < row.length) {
+          div2 = document.createElement("kbd");
+          div2.textContent = row[index2];
+
+          button1 = document.createElement("button");
+          button1.textContent = "编辑";
+          button1.id = row[index2];
+
+          button1.onClick = function(bbb) {
+            console.log(bbb);
+            console.log(bbb["target"]["id"]);
+            newWebSite = prompt("请输入新网址");
+            hash[key] = newWebSite;
+            // 将变更后的地址存到localStotage中
+            localStorage.setItem("zz", JSON.stringify(hash));
+          };
+          div2.appendChild(button1);
+          div1.appendChild(div2);
+          index2 = index2 + 1;
+        }
+
+        index = index + 1;
+      }
+      //监听鼠标按下事件
+      document.onkeypress = function(aa) {
+        key = aa["key"];
+        webSite = hash[key];
+        // 模拟用户在地址栏输入
+        // location.href = "http://" + webSite;
+        // 在新窗口打开
+        window.open("http://" + webSite, "_blank");
+      };
+    </script>
+  </body>
+</html>

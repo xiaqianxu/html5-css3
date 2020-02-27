@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+}
+kbd {
+  border: 1px solid red;
+  width: 4em;
+  height: 2em;
+  display: inline-block; /*kbd为inline元素，不加这句加宽高没有用 */
+  text-transform: uppercase;
+  position: relative;
+}
+kbd > button {
+  display: none;
+  right: 0;
+  bottom: 0;
+  position: absolute; /*让button换行，爸爸需要添加absolute*/
+}
+kbd:hover > button {
+  display: inline-block;
+}
+#mainDiv > div:nth-child(2) {
+  margin-left: 1em;
+}
+#mainDiv > div:nth-child(3) {
+  margin-left: 2em;
+}
+#mainDiv {
+  display: inline-block;
+}
+main {
+  text-align: center;
+}
+main #mainDiv {
+  text-align: center;
+}
+/* 元素居中 
+1.内联元素：给爸爸加个text-line：center
+2.块级元素：若宽度是固定的
+3.以上都不满足：变成内联元素（display：inline-block）,在其爸爸上加text-line:center
+*/
