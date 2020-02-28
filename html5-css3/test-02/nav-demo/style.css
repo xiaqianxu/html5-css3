@@ -5,6 +5,31 @@
 a {
   text-decoration: none;
 }
+body {
+  height: 100vh;
+  background: grey url(./wall.jpg) no-repeat center center scroll;
+  /* 让屏幕自适应 */
+  background-size: cover;
+}
+main {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+/* #footerDiv {
+  text-align: center;
+} */
+footer #footerDiv {
+  margin-left: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(255, 255, 255, 0.2);
+  display: inline-block;
+}
+
 kbd {
   border: 1px solid red;
   width: 50px;
@@ -20,15 +45,29 @@ kbd {
   background: -webkit-linear-gradient(top, #292929 0%, #111111 100%);
   color: rgb(255, 255, 255);
   font-family: keyboard, "Arial Rounded", Helvetica, Arial, sans-serif;
-  font-size: 24px;
+  font-size: 16px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
-  /* 让键盘里面的字上下左右居中 */
+  position: relative;
+
+  /* 让键盘里面的字上下左右居中
   display: inline-flex;
   /* 上下居中 */
-  align-items: center;
+  /* align-items: center; */
   /* 左右居中 */
-  justify-content: center;
+  /* justify-content: center; */
+}
+.kbd .text {
+  position: absolute;
+  left: 5px;
+  top: 2px;
+}
+.kbd > img {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  left: 5px;
+  bottom: 2px;
 }
 .row {
   margin: 10px;
@@ -52,7 +91,9 @@ kbd:hover > button {
   margin-left: -40px;
 }
 #mainDiv {
+  background: rgb(255, 255, 255, 0.2);
   display: inline-block;
+  border-radius: 10px;
 }
 main #mainDiv {
   text-align: center;
