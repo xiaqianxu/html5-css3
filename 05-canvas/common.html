@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的画布</title>
+    <!-- <link rel="stylesheet" href="./style.css" /> -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #myCanvas {
+        height: 100vh;
+        background: gray;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="myCanvas"></div>
+    <script src="./main.js"></script>
+  </body>
+  <script>
+    var myCanvas = document.getElementById("myCanvas");
+    //是否开启画画模式(默认不开启)
+    var painting = false;
+    //鼠标按下去
+    myCanvas.onmousedown = function(a) {
+      painting = true;
+      var x = a.clientX;
+      var y = a.clientY;
+      var pointDiv = document.createElement("div");
+      pointDiv.style =
+        "width:6px;height:6px;background:red;border-radius:3px;position:absolute; left:" +
+        (x - 3) +
+        "px;" +
+        "top:" +
+        (y - 3) +
+        "px";
+      myCanvas.appendChild(pointDiv);
+    };
+    //鼠标移动
+    myCanvas.onmousemove = function(a) {
+      if (painting) {
+        var x = a.clientX;
+        var y = a.clientY;
+        var pointDiv = document.createElement("div");
+        pointDiv.style =
+          "width:6px;height:6px;background:red;border-radius:3px;position:absolute; left:" +
+          (x - 3) +
+          "px;" +
+          "top:" +
+          (y - 3) +
+          "px";
+        myCanvas.appendChild(pointDiv);
+      } else {
+      }
+    };
+
+    //鼠标松开
+    myCanvas.onmouseup = function(c) {
+      painting = false;
+    };
+  </script>
+</html>

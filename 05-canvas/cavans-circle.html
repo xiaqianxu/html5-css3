@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cavans-circle</title>
+    <style>
+      #circle {
+        background: green;
+        display: block;
+      }
+
+      body {
+        margin: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="circle" width="300" height="300"></canvas>
+  </body>
+  <script>
+    var canvas = document.getElementById("circle");
+    var context = canvas.getContext("2d");
+    var painting = false;
+    var lastPoint = { x: undefined, y: undefined };
+
+    canvas.onmousedown = function(a) {
+      painting = true;
+      var x = a.clientX;
+      var y = a.clientY;
+      lastPoint = { x: x, y: y };
+      drawCircle(x, y, 1);
+    };
+    canvas.onmousemove = function(a) {
+      if (painting) {
+        // console.log("1111");
+        var x = a.clientX;
+        var y = a.clientY;
+        var newPoint = { x: x, y: y };
+        console.log(newPoint);
+        drawCircle(x, y, 1);
+        drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+        lastPoint = newPoint;
+      }
+    };
+    canvas.onmouseup = function(a) {
+      painting = false;
+    };
+    function drawCircle(x, y, radius) {
+      context.beginPath();
+      context.fillStyle = "black";
+      context.arc(x, y, radius, 0, Math.PI * 2, false);
+      context.fill();
+    }
+
+    function drawLine(x1, y1, x2, y2) {
+      // console.log("p");
+      context.beginPath();
+      context.strokeStyle = "black";
+      context.moveTo(x1, y1); //起点
+      context.lineWidth = 4;
+      context.lineTo(x2, y2); //终点
+      context.stroke();
+      context.closePath();
+    }
+  </script>
+</html>
