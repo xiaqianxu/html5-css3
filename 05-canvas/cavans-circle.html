@@ -13,39 +13,56 @@
       body {
         margin: 0px;
       }
+      .actions {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+      }
+      .actions > #brush {
+        display: none;
+      }
+      .actions.x > #brush {
+        display: inline-block;
+      }
+      .actions.x > #eraser {
+        display: none;
+      }
     </style>
   </head>
   <body>
-    <canvas id="circle" width="300" height="300"></canvas>
+    <!-- width,height为canvas的属性 -->
+    <!-- <canvas id="circle" width="300" height="300"></canvas> -->
+    <canvas id="circle"></canvas>
+    <div id="actions" class="actions">
+      <button id="eraser">橡皮擦</button>
+      <button id="brush">画笔</button>
+    </div>
   </body>
   <script>
+    /***********1.得到cavans，并设置宽高为屏幕的宽高************/
     var canvas = document.getElementById("circle");
     var context = canvas.getContext("2d");
-    var painting = false;
-    var lastPoint = { x: undefined, y: undefined };
 
-    canvas.onmousedown = function(a) {
-      painting = true;
-      var x = a.clientX;
-      var y = a.clientY;
-      lastPoint = { x: x, y: y };
-      drawCircle(x, y, 1);
+    //1.自动获得canvas的宽高
+    autoEetCanvasSize(canvas);
+
+    //2.画图
+    listenToMouse(canvas);
+
+    //3.橡皮擦清除
+    var eraserEnabled = false; //默认橡皮擦不可以使用
+    eraser.onclick = function() {
+      eraserEnabled = true;
+      actions.className = "actions x";
     };
-    canvas.onmousemove = function(a) {
-      if (painting) {
-        // console.log("1111");
-        var x = a.clientX;
-        var y = a.clientY;
-        var newPoint = { x: x, y: y };
-        console.log(newPoint);
-        drawCircle(x, y, 1);
-        drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
-        lastPoint = newPoint;
-      }
+    brush.onclick = function() {
+      eraserEnabled = false;
+      actions.className = "actions";
     };
-    canvas.onmouseup = function(a) {
-      painting = false;
-    };
+
+    /********所用到的方法*************/
+
+    //画圆圈
     function drawCircle(x, y, radius) {
       context.beginPath();
       context.fillStyle = "black";
@@ -53,8 +70,8 @@
       context.fill();
     }
 
+    //画线
     function drawLine(x1, y1, x2, y2) {
-      // console.log("p");
       context.beginPath();
       context.strokeStyle = "black";
       context.moveTo(x1, y1); //起点
@@ -62,6 +79,61 @@
       context.lineTo(x2, y2); //终点
       context.stroke();
       context.closePath();
+    }
+
+    //获得用户屏幕的宽高
+    function reCanvasSize(canvas) {
+      var height = document.documentElement.clientHeight;
+      var width = document.documentElement.clientWidth;
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    //自动获取canvas的宽高
+    function autoEetCanvasSize(canvas) {
+      reCanvasSize(canvas);
+      window.onresize = function() {
+        reCanvasSize(canvas);
+      };
+      var using = false; //用户是否在操作
+      var lastPoint = { x: undefined, y: undefined };
+    }
+
+    //监听鼠标事件
+    function listenToMouse() {
+      //按下鼠标
+      canvas.onmousedown = function(a) {
+        using = true;
+        var x = a.clientX;
+        var y = a.clientY;
+        if (eraserEnabled) {
+          context.clearRect(x - 5, y - 5, 10, 10);
+        } else {
+          lastPoint = { x: x, y: y };
+        }
+      };
+
+      //鼠标移动
+      canvas.onmousemove = function(a) {
+        var x = a.clientX;
+        var y = a.clientY;
+        if (!using) {
+          return;
+        }
+        if (eraserEnabled) {
+          context.clearRect(x - 5, y - 5, 10, 10);
+        } else {
+          var newPoint = { x: x, y: y };
+          drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+          //让最新的起点替换之前的起点，这样就可以划线时连接上个点
+          lastPoint = newPoint;
+        }
+      };
+
+      //鼠标松开
+      canvas.onmouseup = function(a) {
+        using = false;
+      };
     }
   </script>
 </html>
