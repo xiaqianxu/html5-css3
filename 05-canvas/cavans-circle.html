@@ -10,7 +10,7 @@
     <title>canvas-circle</title>
     <style>
       #circle {
-        background: gray;
+        background: white;
         display: block;
       }
       * {
@@ -18,7 +18,7 @@
         padding: 0px;
       }
       body {
-        margin: 0px;
+        overflow: hidden;
       }
       ul,
       ol {
@@ -26,8 +26,8 @@
       }
       .actions {
         position: fixed;
-        bottom: 0;
-        right: 0;
+        top: 0;
+        left: 0;
         padding: 20px;
       }
       /*.actions > #brush {
@@ -43,10 +43,10 @@
         width: 1.5em;
         height: 1.5em;
         transform: all 0.3s; /*过渡为0.3秒*/
-        margin: 0, 10px;
+        margin: 0, 15px;
       }
       #actions svg.active {
-        transform: scale(1.5); /*放大1.5倍*/
+        transform: scale(1.2); /*放大1.5倍*/
         fill: red;
       }
       .icon {
@@ -57,10 +57,9 @@
         overflow: hidden;
       }
       .colors {
-        border: 1px solid green;
         position: fixed;
-        left: 10px;
-        top: 5px;
+        left: 18px;
+        top: 50px;
       }
       .colors > li {
         /* border: 1px solid red; */
@@ -81,18 +80,39 @@
       }
       .colors > li.red.active {
         box-shadow: 0, 0, 5px, rgba(0, 0, 0, 0.95);
-        transform: scale(1.5); /*放大1.5倍*/
+        transform: scale(1.2); /*放大1.5倍*/
       }
       .colors > li.green.active {
         box-shadow: 0, 0, 5px, rgba(0, 0, 0, 0.95);
-        transform: scale(1.5); /*放大1.5倍*/
+        transform: scale(1.2); /*放大1.5倍*/
       }
       .colors > li.blue.active {
         box-shadow: 0, 0, 5px, rgba(0, 0, 0, 0.95);
-        transform: scale(1.5); /*放大1.5倍*/
+        transform: scale(1.2); /*放大1.5倍*/
+      }
+      .sizes {
+        /* border: 5px solid red; */
+        position: fixed;
+        right: 25px;
+        top: 30px;
+      }
+      .sizes > li {
+        float: left;
+      }
+      .sizes > li.thin {
+        width: 40px;
+        height: 0px;
+        border-top: 2px solid black;
+        /* margin-bottom: 20px; */
+        margin-right: 20px;
+      }
+      .sizes > li.thick {
+        width: 40px;
+        height: 0px;
+        border-top: 6px solid black;
       }
     </style>
-    <script src="//at.alicdn.com/t/font_1664432_z5emu6map9.js"></script>
+    <script src="//at.alicdn.com/t/font_1664432_9fxfelqk4hl.js"></script>
   </head>
   <body>
     <!-- width,height为canvas的属性 -->
@@ -105,6 +125,13 @@
       <svg class="icon" id="eraser">
         <use xlink:href="#icon-eraser"></use>
       </svg>
+      <svg class="icon" id="clear">
+        <use xlink:href="#icon-clear"></use>
+      </svg>
+      <svg class="icon" id="download">
+        <use xlink:href="#icon-download"></use>
+      </svg>
+
       <!-- <button id="eraser">橡皮擦</button>
       <button id="brush">画笔</button> -->
 
@@ -114,6 +141,10 @@
         <li id="green" class="green"></li>
         <li id="blue" class="blue"></li>
       </ul>
+      <ul class="sizes">
+        <li class="thin" id="thin"></li>
+        <li class="thick" id="thick"></li>
+      </ul>
     </div>
   </body>
   <script>
@@ -121,6 +152,8 @@
     var canvas = document.getElementById("circle");
     var context = canvas.getContext("2d");
     var using = false; //用户是否在操作
+    var eraserEnabled = false; //默认橡皮擦不可以使用
+    var lineWidth = 2;
 
     //挑选画笔颜色
     context.strokeStyle = "red";
@@ -133,7 +166,7 @@
     listenToUser(canvas, using);
 
     //3.橡皮擦清除
-    var eraserEnabled = false; //默认橡皮擦不可以使用
+
     eraser.onclick = function() {
       eraserEnabled = true;
       eraser.classList.add("active");
@@ -143,6 +176,25 @@
       eraserEnabled = false;
       pen.classList.add("active");
       eraser.classList.remove("active");
+    };
+    clear.onclick = function() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    };
+    download.onclick = function() {
+      // set canvasImg image src to dataUR
+      var dataUR = canvas.toDataURL("image/png");
+      console.log(dataUR);
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.download = "我的画作";
+      a.href = dataUR;
+      a.click();
+    };
+    thin.onclick = function(a) {
+      lineWidth = a.target.offsetHeight;
+    };
+    thick.onclick = function(a) {
+      lineWidth = a.target.offsetHeight;
     };
     // eraser.onclick = function() {
     //   eraserEnabled = true;
@@ -166,7 +218,7 @@
     function drawLine(x1, y1, x2, y2) {
       context.beginPath();
       context.moveTo(x1, y1); //起点
-      context.lineWidth = 4;
+      context.lineWidth = lineWidth;
       context.lineTo(x2, y2); //终点
       context.stroke();
       context.closePath();
