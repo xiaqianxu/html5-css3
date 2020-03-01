@@ -13,9 +13,16 @@
         background: gray;
         display: block;
       }
-
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
       body {
         margin: 0px;
+      }
+      ul,
+      ol {
+        list-style: none;
       }
       .actions {
         position: fixed;
@@ -36,18 +43,53 @@
         width: 1.5em;
         height: 1.5em;
         transform: all 0.3s; /*过渡为0.3秒*/
+        margin: 0, 10px;
       }
       #actions svg.active {
         transform: scale(1.5); /*放大1.5倍*/
         fill: red;
       }
-
       .icon {
         width: 1em;
         height: 1em;
         vertical-align: -0.15em;
         fill: currentColor;
         overflow: hidden;
+      }
+      .colors {
+        border: 1px solid green;
+        position: fixed;
+        left: 10px;
+        top: 5px;
+      }
+      .colors > li {
+        /* border: 1px solid red; */
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        margin-top: 10px;
+        box-shadow: 0, 0, 5px, rgba(0, 0, 0, 0.25);
+      }
+      .colors > li.red {
+        background: red;
+      }
+      .colors > li.green {
+        background: green;
+      }
+      .colors > li.blue {
+        background: blue;
+      }
+      .colors > li.red.active {
+        box-shadow: 0, 0, 5px, rgba(0, 0, 0, 0.95);
+        transform: scale(1.5); /*放大1.5倍*/
+      }
+      .colors > li.green.active {
+        box-shadow: 0, 0, 5px, rgba(0, 0, 0, 0.95);
+        transform: scale(1.5); /*放大1.5倍*/
+      }
+      .colors > li.blue.active {
+        box-shadow: 0, 0, 5px, rgba(0, 0, 0, 0.95);
+        transform: scale(1.5); /*放大1.5倍*/
       }
     </style>
     <script src="//at.alicdn.com/t/font_1664432_z5emu6map9.js"></script>
@@ -63,9 +105,15 @@
       <svg class="icon" id="eraser">
         <use xlink:href="#icon-eraser"></use>
       </svg>
-
       <!-- <button id="eraser">橡皮擦</button>
       <button id="brush">画笔</button> -->
+
+      <!-- 添加笔刷颜色的列表 -->
+      <ul class="colors">
+        <li id="red" class="active red"></li>
+        <li id="green" class="green"></li>
+        <li id="blue" class="blue"></li>
+      </ul>
     </div>
   </body>
   <script>
@@ -74,11 +122,15 @@
     var context = canvas.getContext("2d");
     var using = false; //用户是否在操作
 
+    //挑选画笔颜色
+    context.strokeStyle = "red";
+    listenPenColor(context);
+
     //1.自动获得canvas的宽高
     autoEetCanvasSize(canvas);
 
     //2.画图
-    listenToUser(canvas);
+    listenToUser(canvas, using);
 
     //3.橡皮擦清除
     var eraserEnabled = false; //默认橡皮擦不可以使用
@@ -106,7 +158,6 @@
     //画圆圈
     function drawCircle(x, y, radius) {
       context.beginPath();
-      context.fillStyle = "black";
       context.arc(x, y, radius, 0, Math.PI * 2, false);
       context.fill();
     }
@@ -114,7 +165,6 @@
     //画线
     function drawLine(x1, y1, x2, y2) {
       context.beginPath();
-      context.strokeStyle = "black";
       context.moveTo(x1, y1); //起点
       context.lineWidth = 4;
       context.lineTo(x2, y2); //终点
@@ -140,7 +190,7 @@
     }
 
     //监听鼠标事件
-    function listenToUser(canvas) {
+    function listenToUser(canvas, using) {
       // if (canvas.ontouchstart !==undefined) {
       if (document.body.ontouchstart !== undefined) {
         canvas.ontouchstart = function(a) {
@@ -206,6 +256,27 @@
           using = false;
         };
       }
+    }
+
+    function listenPenColor(context) {
+      red.onclick = function() {
+        context.strokeStyle = "red";
+        red.classList.add("active");
+        green.classList.remove("active");
+        blue.classList.remove("active");
+      };
+      green.onclick = function() {
+        context.strokeStyle = "green";
+        green.classList.add("active");
+        red.classList.remove("active");
+        blue.classList.remove("active");
+      };
+      blue.onclick = function() {
+        context.strokeStyle = "blue";
+        blue.classList.add("active");
+        red.classList.remove("active");
+        green.classList.remove("active");
+      };
     }
   </script>
 </html>
