@@ -2,8 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cavans-circle</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <title>canvas-circle</title>
     <style>
       #circle {
         background: green;
@@ -42,12 +46,13 @@
     /***********1.得到cavans，并设置宽高为屏幕的宽高************/
     var canvas = document.getElementById("circle");
     var context = canvas.getContext("2d");
+    var using = false; //用户是否在操作
 
     //1.自动获得canvas的宽高
     autoEetCanvasSize(canvas);
 
     //2.画图
-    listenToMouse(canvas);
+    listenToUser(canvas);
 
     //3.橡皮擦清除
     var eraserEnabled = false; //默认橡皮擦不可以使用
@@ -95,45 +100,76 @@
       window.onresize = function() {
         reCanvasSize(canvas);
       };
-      var using = false; //用户是否在操作
       var lastPoint = { x: undefined, y: undefined };
     }
 
     //监听鼠标事件
-    function listenToMouse() {
-      //按下鼠标
-      canvas.onmousedown = function(a) {
-        using = true;
-        var x = a.clientX;
-        var y = a.clientY;
-        if (eraserEnabled) {
-          context.clearRect(x - 5, y - 5, 10, 10);
-        } else {
-          lastPoint = { x: x, y: y };
-        }
-      };
+    function listenToUser(canvas) {
+      // if (canvas.ontouchstart !==undefined) {
+      if (document.body.ontouchstart !== undefined) {
+        canvas.ontouchstart = function(a) {
+          var x = a.touches[0].clientX;
+          var y = a.touches[0].clientY;
+          using = true;
+          if (eraserEnabled) {
+            context.clearRect(x - 5, y - 5, x, y);
+          } else {
+            lastPoint = { x: x, y: y };
+          }
+        };
+        canvas.ontouchmove = function(a) {
+          var x = a.touches[0].clientX;
+          var y = a.touches[0].clientY;
+          if (!using) {
+            return;
+          } else {
+            if (eraserEnabled) {
+              context.clearRect(x - 5, y - 5, x, y);
+            } else {
+              var newPoint = { x: x, y: y };
+              drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+              lastPoint = newPoint;
+            }
+          }
+        };
+        canvas.ontouchend = function(a) {
+          using = false;
+        };
+      } else {
+        //按下鼠标
+        canvas.onmousedown = function(a) {
+          using = true;
+          var x = a.clientX;
+          var y = a.clientY;
+          if (eraserEnabled) {
+            context.clearRect(x - 5, y - 5, 10, 10);
+          } else {
+            lastPoint = { x: x, y: y };
+          }
+        };
 
-      //鼠标移动
-      canvas.onmousemove = function(a) {
-        var x = a.clientX;
-        var y = a.clientY;
-        if (!using) {
-          return;
-        }
-        if (eraserEnabled) {
-          context.clearRect(x - 5, y - 5, 10, 10);
-        } else {
-          var newPoint = { x: x, y: y };
-          drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
-          //让最新的起点替换之前的起点，这样就可以划线时连接上个点
-          lastPoint = newPoint;
-        }
-      };
+        //鼠标移动
+        canvas.onmousemove = function(a) {
+          var x = a.clientX;
+          var y = a.clientY;
+          if (!using) {
+            return;
+          }
+          if (eraserEnabled) {
+            context.clearRect(x - 5, y - 5, 10, 10);
+          } else {
+            var newPoint = { x: x, y: y };
+            drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+            //让最新的起点替换之前的起点，这样就可以划线时连接上个点
+            lastPoint = newPoint;
+          }
+        };
 
-      //鼠标松开
-      canvas.onmouseup = function(a) {
-        using = false;
-      };
+        //鼠标松开
+        canvas.onmouseup = function(a) {
+          using = false;
+        };
+      }
     }
   </script>
 </html>
