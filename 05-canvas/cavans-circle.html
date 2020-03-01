@@ -10,7 +10,7 @@
     <title>canvas-circle</title>
     <style>
       #circle {
-        background: green;
+        background: gray;
         display: block;
       }
 
@@ -21,8 +21,9 @@
         position: fixed;
         bottom: 0;
         right: 0;
+        padding: 20px;
       }
-      .actions > #brush {
+      /*.actions > #brush {
         display: none;
       }
       .actions.x > #brush {
@@ -30,16 +31,41 @@
       }
       .actions.x > #eraser {
         display: none;
+      } */
+      #actions svg {
+        width: 1.5em;
+        height: 1.5em;
+        transform: all 0.3s; /*过渡为0.3秒*/
+      }
+      #actions svg.active {
+        transform: scale(1.5); /*放大1.5倍*/
+        fill: red;
+      }
+
+      .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
       }
     </style>
+    <script src="//at.alicdn.com/t/font_1664432_z5emu6map9.js"></script>
   </head>
   <body>
     <!-- width,height为canvas的属性 -->
     <!-- <canvas id="circle" width="300" height="300"></canvas> -->
     <canvas id="circle"></canvas>
     <div id="actions" class="actions">
-      <button id="eraser">橡皮擦</button>
-      <button id="brush">画笔</button>
+      <svg class="icon" id="pen">
+        <use xlink:href="#icon-pen"></use>
+      </svg>
+      <svg class="icon" id="eraser">
+        <use xlink:href="#icon-eraser"></use>
+      </svg>
+
+      <!-- <button id="eraser">橡皮擦</button>
+      <button id="brush">画笔</button> -->
     </div>
   </body>
   <script>
@@ -58,12 +84,22 @@
     var eraserEnabled = false; //默认橡皮擦不可以使用
     eraser.onclick = function() {
       eraserEnabled = true;
-      actions.className = "actions x";
+      eraser.classList.add("active");
+      pen.classList.remove("active");
     };
-    brush.onclick = function() {
+    pen.onclick = function() {
       eraserEnabled = false;
-      actions.className = "actions";
+      pen.classList.add("active");
+      eraser.classList.remove("active");
     };
+    // eraser.onclick = function() {
+    //   eraserEnabled = true;
+    //   actions.className = "actions x";
+    // };
+    // brush.onclick = function() {
+    //   eraserEnabled = false;
+    //   actions.className = "actions";
+    // };
 
     /********所用到的方法*************/
 
