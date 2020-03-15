@@ -79,6 +79,7 @@ h6 {
 /* .topNavBar nav > ul > li > a:hover {
   border-bottom: 3px solid #e06567;
 } */
+.topNavBar nav > ul > li.highlight > a::after,
 .topNavBar nav > ul > li.active > a::after {
   content: "";
   display: block;
@@ -146,6 +147,10 @@ h6 {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
+[data-x].active {
+  border: 2px solid gray;
+  box-shadow: 0px 1px 5px 0px rgba(13, 145, 94, 0.5);
+}
 .userCard {
   max-width: 940px;
   margin-left: auto;
